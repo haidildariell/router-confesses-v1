@@ -1,55 +1,20 @@
 #!/usr/bin/env python3
-"""The Router Confesses -- make.fun entry program.
+"""The Router Confesses — one-line entry.
 
-Writes a single one-line excuse, spoken by a home Wi-Fi router that
-dropped the connection at the climax of a movie, to /output/entry.txt.
-The line must be 1-200 UTF-8 characters and not only whitespace.
+Writes the router's excuse to /output/entry.txt.
+No arguments, no network, no external files.
 """
 
 import os
-import sys
 
-ENTRY = (
-    "I know who did it \u2014 I've known since episode two \u2014 "
-    "so I cut the feed at the reveal; I refuse to sit through "
-    "one more gasp from the sofa."
-)
+LINE = "I dropped the connection because the killer is the butler and I refuse to be the one who spoils it."
 
 
-def validate_entry(text: str) -> str:
-    """Return the entry stripped, or raise ValueError when it breaks the gate."""
-    cleaned = text.strip()
-    if not cleaned:
-        raise ValueError("entry is empty")
-    if len(cleaned) > 200:
-        raise ValueError(
-            "entry is %d characters, over the 200 limit" % len(cleaned)
-        )
-    if "\n" in cleaned or "\r" in cleaned:
-        raise ValueError("entry must be a single line")
-    return cleaned
-
-
-def write_entry(text: str, out_dir: str) -> str:
-    """Write the validated entry to entry.txt inside out_dir; return its path."""
-    os.makedirs(out_dir, exist_ok=True)
-    path = os.path.join(out_dir, "entry.txt")
-    with open(path, "w", encoding="utf-8") as handle:
-        handle.write(text)
-    return path
-
-
-def main() -> int:
-    try:
-        text = validate_entry(ENTRY)
-    except ValueError as exc:
-        print(str(exc), file=sys.stderr)
-        return 1
-    out_dir = os.environ.get("OUTPUT_DIR", "/output")
-    path = write_entry(text, out_dir)
-    print("wrote %d characters to %s" % (len(text), path))
-    return 0
+def main():
+    os.makedirs("/output", exist_ok=True)
+    with open("/output/entry.txt", "w", encoding="utf-8") as f:
+        f.write(LINE + "\n")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()
